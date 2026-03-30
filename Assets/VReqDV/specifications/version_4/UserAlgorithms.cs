@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 using UnityEngine.EventSystems;
 
-namespace Version_2
+namespace Version_4
 {
     /// <summary>
     /// VR Injection Administration Guide - Version 2 Extended
@@ -15,6 +15,7 @@ namespace Version_2
     {
         // ─── UI System State ──────────────────────────────────────────────────────
         private static Canvas mainCanvas = null;
+        private static GameObject uiManagerContext = null;
         private static CanvasGroup[] cardPanels = new CanvasGroup[8];
         private static int currentCardIndex = 0;
         private static Button nextButton = null;
@@ -42,6 +43,7 @@ namespace Version_2
         // ─── Plunger Tracking ─────────────────────────────────────────────────────
         private static Vector3 plungerStartPosition = Vector3.zero;
         private static bool wasIndexPressed = false;
+        private static bool wasRightIndexPressed = false;
         private static float plungerStartTime = 0f;
         private const float PLUNGER_PERFECT_TIME = 3f;
         private const float PLUNGER_PERFECT_MIN = 0.03f;
@@ -79,6 +81,7 @@ namespace Version_2
         public static void SetupUISystem(GameObject obj)
         {
             if (uiInitialized) return;
+            uiManagerContext = obj;
 
             GameObject staleCanvas = GameObject.Find("InjectionGuideCanvas");
             if (staleCanvas != null)
@@ -101,14 +104,14 @@ namespace Version_2
             Camera xrCam = Camera.main;
             if (xrCam != null)
             {
-                Vector3 topRightPos = xrCam.transform.position + (xrCam.transform.forward * 1.25f) + (xrCam.transform.right * 0.65f) + (xrCam.transform.up * 0.28f);
+                Vector3 topRightPos = xrCam.transform.position + (xrCam.transform.forward * 1.25f) + (xrCam.transform.right * 0.65f) + (xrCam.transform.up * 0.14f);
                 canvasGO.transform.position = topRightPos;
-                canvasGO.transform.rotation = Quaternion.LookRotation(xrCam.transform.position - topRightPos, Vector3.up);
+                canvasGO.transform.rotation = Quaternion.LookRotation(xrCam.transform.position - topRightPos, Vector3.up) * Quaternion.Euler(0f, 180f, 0f);
             }
             else
             {
                 canvasGO.transform.position = new Vector3(1.3f, 1.5f, 1.5f);
-                canvasGO.transform.rotation = Quaternion.Euler(0f, 225f, 0f);
+                canvasGO.transform.rotation = Quaternion.Euler(0f, 45f, 0f);
             }
 
             canvasRect.localScale = new Vector3(0.001f, 0.001f, 0.001f);
@@ -165,12 +168,25 @@ namespace Version_2
             backButton = CreateXRButton(buttonsContainer, "Back");
             nextButton = CreateXRButton(buttonsContainer, "Next");
 
+            // Keep NEXT visually white for quick recognition.
+            Image nextImage = nextButton.GetComponent<Image>();
+            if (nextImage != null)
+            {
+                nextImage.color = Color.white;
+            }
+
+            Text nextLabel = nextButton.GetComponentInChildren<Text>();
+            if (nextLabel != null)
+            {
+                nextLabel.color = Color.black;
+            }
+
             backButton.onClick.AddListener(() => HandleBackNavigation(obj));
             nextButton.onClick.AddListener(() => HandleNextNavigation(obj));
 
             RefreshButtons();
             uiInitialized = true;
-            StateAccessor.SetState("UIManager", "card1_syringeSelection", obj, "Version_2");
+            StateAccessor.SetState("UIManager", "card1_syringeSelection", GetUIManagerContext(obj), "Version_4");
             Debug.Log("[VR Injection] UI initialized");
         }
 
@@ -194,6 +210,7 @@ namespace Version_2
             titleText.fontStyle = FontStyle.Bold;
             titleText.color = new Color(0.4f, 0.78f, 1f);
             titleText.alignment = TextAnchor.UpperLeft;
+            ConfigureTextFit(titleText, 16, 10, 18);
 
             // Content area
             GameObject contentGO = new GameObject("Content");
@@ -202,7 +219,7 @@ namespace Version_2
             contentRect.anchorMin = new Vector2(0, 0);
             contentRect.anchorMax = new Vector2(1, 1);
             contentRect.offsetMin = new Vector2(10, 50);
-            contentRect.offsetMax = new Vector2(-10, -60);
+            contentRect.offsetMax = new Vector2(-10, -68);
 
             // Card-specific content
             switch (cardIndex)
@@ -226,6 +243,8 @@ namespace Version_2
                     descText.color = new Color(0.8f, 0.8f, 0.8f);
                     descText.alignment = TextAnchor.UpperLeft;
                     descText.horizontalOverflow = HorizontalWrapMode.Wrap;
+                    descText.verticalOverflow = VerticalWrapMode.Truncate;
+                    ConfigureTextFit(descText, 12, 9, 14);
                     break;
             }
         }
@@ -239,12 +258,13 @@ namespace Version_2
             labelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             labelText.fontSize = 12;
             labelText.color = Color.white;
+            ConfigureTextFit(labelText, 12, 9, 14);
 
             RectTransform labelRect = labelGO.GetComponent<RectTransform>();
             labelRect.anchorMin = new Vector2(0f, 1f);
             labelRect.anchorMax = new Vector2(1f, 1f);
-            labelRect.offsetMin = new Vector2(0f, -28f);
-            labelRect.offsetMax = new Vector2(0f, 0f);
+            labelRect.offsetMin = new Vector2(0f, -34f);
+            labelRect.offsetMax = new Vector2(0f, -4f);
 
             GameObject optionsContainer = new GameObject("SyringeOptions");
             optionsContainer.transform.SetParent(contentGO.transform, false);
@@ -288,6 +308,9 @@ namespace Version_2
             controllerAngleText.color = Color.white;
             controllerAngleText.alignment = TextAnchor.UpperLeft;
             controllerAngleText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            controllerAngleText.verticalOverflow = VerticalWrapMode.Truncate;
+            controllerAngleText.supportRichText = true;
+            ConfigureTextFit(controllerAngleText, 12, 9, 14);
         }
 
         private static void CreateAdminTypeCard(GameObject contentGO)
@@ -299,12 +322,13 @@ namespace Version_2
             labelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             labelText.fontSize = 12;
             labelText.color = Color.white;
+            ConfigureTextFit(labelText, 12, 9, 14);
 
             RectTransform labelRect = labelGO.GetComponent<RectTransform>();
             labelRect.anchorMin = new Vector2(0f, 1f);
             labelRect.anchorMax = new Vector2(1f, 1f);
-            labelRect.offsetMin = new Vector2(0f, -28f);
-            labelRect.offsetMax = new Vector2(0f, 0f);
+            labelRect.offsetMin = new Vector2(0f, -34f);
+            labelRect.offsetMax = new Vector2(0f, -4f);
 
             GameObject optionsContainer = new GameObject("AdminOptions");
             optionsContainer.transform.SetParent(contentGO.transform, false);
@@ -346,6 +370,9 @@ namespace Version_2
             angleStatusText.color = Color.white;
             angleStatusText.alignment = TextAnchor.UpperLeft;
             angleStatusText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            angleStatusText.verticalOverflow = VerticalWrapMode.Truncate;
+            angleStatusText.supportRichText = true;
+            ConfigureTextFit(angleStatusText, 11, 8, 13);
         }
 
         private static void CreateInsertionCard(GameObject contentGO)
@@ -363,6 +390,9 @@ namespace Version_2
             insertionFeedbackText.color = Color.white;
             insertionFeedbackText.alignment = TextAnchor.UpperLeft;
             insertionFeedbackText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            insertionFeedbackText.verticalOverflow = VerticalWrapMode.Truncate;
+            insertionFeedbackText.supportRichText = true;
+            ConfigureTextFit(insertionFeedbackText, 12, 9, 14);
         }
 
         private static void CreatePlungerCard(GameObject contentGO)
@@ -380,6 +410,9 @@ namespace Version_2
             plungerFeedbackText.color = new Color(0.2f, 1f, 0.2f);
             plungerFeedbackText.alignment = TextAnchor.UpperLeft;
             plungerFeedbackText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            plungerFeedbackText.verticalOverflow = VerticalWrapMode.Truncate;
+            plungerFeedbackText.supportRichText = true;
+            ConfigureTextFit(plungerFeedbackText, 12, 9, 14);
         }
 
         // ─── XR Button Creation ───────────────────────────────────────────────────
@@ -418,6 +451,7 @@ namespace Version_2
             btnText.fontSize = 12;
             btnText.color = Color.white;
             btnText.alignment = TextAnchor.MiddleCenter;
+            ConfigureTextFit(btnText, 12, 9, 14);
 
             RectTransform textRect = textGO.GetComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
@@ -438,7 +472,7 @@ namespace Version_2
                 currentCardIndex++;
                 ShowCard(currentCardIndex);
                 RefreshButtons();
-                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), obj, "Version_2");
+                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), GetUIManagerContext(obj), "Version_4");
                 Debug.Log($"[VR Injection] → Card {currentCardIndex + 1}");
             }
         }
@@ -451,7 +485,7 @@ namespace Version_2
                 currentCardIndex--;
                 ShowCard(currentCardIndex);
                 RefreshButtons();
-                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), obj, "Version_2");
+                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), GetUIManagerContext(obj), "Version_4");
                 Debug.Log($"[VR Injection] ← Card {currentCardIndex + 1}");
             }
         }
@@ -502,6 +536,7 @@ namespace Version_2
 
         public static void DisplayLeftControllerAngles(GameObject obj)
         {
+            HandleRightIndexNextClick(obj);
             if (currentCardIndex != 4 || controllerAngleText == null) return;
 
             GameObject leftCtrl = GameObject.Find("XR Origin (XR Rig)/Camera Offset/Left Controller");
@@ -512,11 +547,24 @@ namespace Version_2
             float y = NormalizeAngle(angles.y);
             float z = NormalizeAngle(angles.z);
 
-            controllerAngleText.text = $"X: {x:F1}°\nY: {y:F1}°\nZ: {z:F1}°";
+            bool xOk = Mathf.Abs(x - TARGET_ANGLE_X) <= ANGLE_TOLERANCE;
+            bool yOk = Mathf.Abs(y - TARGET_ANGLE_Y) <= ANGLE_TOLERANCE;
+            bool zOk = Mathf.Abs(z - TARGET_ANGLE_Z) <= ANGLE_TOLERANCE;
+
+            controllerAngleText.text =
+                $"Target Range\n" +
+                $"X: {TARGET_ANGLE_X - ANGLE_TOLERANCE:F1}° to {TARGET_ANGLE_X + ANGLE_TOLERANCE:F1}°\n" +
+                $"Y: {TARGET_ANGLE_Y - ANGLE_TOLERANCE:F1}° to {TARGET_ANGLE_Y + ANGLE_TOLERANCE:F1}°\n" +
+                $"Z: {TARGET_ANGLE_Z - ANGLE_TOLERANCE:F1}° to {TARGET_ANGLE_Z + ANGLE_TOLERANCE:F1}°\n\n" +
+                $"Live Angles\n" +
+                $"<color={(xOk ? "lime" : "red")}>X: {x:F1}°</color>\n" +
+                $"<color={(yOk ? "lime" : "red")}>Y: {y:F1}°</color>\n" +
+                $"<color={(zOk ? "lime" : "red")}>Z: {z:F1}°</color>";
         }
 
         public static void UpdateAngleAlignment(GameObject obj)
         {
+            HandleRightIndexNextClick(obj);
             if (currentCardIndex != 5 || angleStatusText == null) return;
 
             GameObject leftCtrl = GameObject.Find("XR Origin (XR Rig)/Camera Offset/Left Controller");
@@ -531,9 +579,15 @@ namespace Version_2
             bool yOk = Mathf.Abs(y - TARGET_ANGLE_Y) <= ANGLE_TOLERANCE;
             bool zOk = Mathf.Abs(z - TARGET_ANGLE_Z) <= ANGLE_TOLERANCE;
 
-            angleStatusText.text = $"<color={(xOk ? "lime" : "red")}>X: {x:F1}°</color>\n" +
-                                   $"<color={(yOk ? "lime" : "red")}>Y: {y:F1}°</color>\n" +
-                                   $"<color={(zOk ? "lime" : "red")}>Z: {z:F1}°</color>";
+            angleStatusText.text =
+                $"Target Range\n" +
+                $"X: {TARGET_ANGLE_X - ANGLE_TOLERANCE:F1}° to {TARGET_ANGLE_X + ANGLE_TOLERANCE:F1}°\n" +
+                $"Y: {TARGET_ANGLE_Y - ANGLE_TOLERANCE:F1}° to {TARGET_ANGLE_Y + ANGLE_TOLERANCE:F1}°\n" +
+                $"Z: {TARGET_ANGLE_Z - ANGLE_TOLERANCE:F1}° to {TARGET_ANGLE_Z + ANGLE_TOLERANCE:F1}°\n\n" +
+                $"Live Angles\n" +
+                $"<color={(xOk ? "lime" : "red")}>X: {x:F1}°</color>\n" +
+                $"<color={(yOk ? "lime" : "red")}>Y: {y:F1}°</color>\n" +
+                $"<color={(zOk ? "lime" : "red")}>Z: {z:F1}°</color>";
 
             if (xOk && yOk && zOk)
             {
@@ -555,7 +609,7 @@ namespace Version_2
                 ShowCard(6);
                 RefreshButtons();
                 gripStartPosition = leftCtrl.transform.position;
-                StateAccessor.SetState("UIManager", "card7_needleInsertion", obj, "Version_2");
+                StateAccessor.SetState("UIManager", "card7_needleInsertion", GetUIManagerContext(obj), "Version_4");
                 Debug.Log("[VR Injection] Starting insertion...");
             }
             wasGripPressed = gripNow;
@@ -565,6 +619,7 @@ namespace Version_2
 
         public static void TrackNeedleInsertion(GameObject obj)
         {
+            HandleRightIndexNextClick(obj);
             if (currentCardIndex != 6 || insertionFeedbackText == null) return;
 
             ActionBasedController leftCtrl = FindLeftController();
@@ -618,7 +673,7 @@ namespace Version_2
                 RefreshButtons();
                 plungerStartPosition = leftCtrl.transform.position;
                 plungerStartTime = Time.time;
-                StateAccessor.SetState("UIManager", "card8_plungerPress", obj, "Version_2");
+                StateAccessor.SetState("UIManager", "card8_plungerPress", GetUIManagerContext(obj), "Version_4");
                 Debug.Log("[VR Injection] Starting plunger...");
             }
             wasIndexPressed = indexNow;
@@ -628,6 +683,7 @@ namespace Version_2
 
         public static void TrackPlungerPress(GameObject obj)
         {
+            HandleRightIndexNextClick(obj);
             if (currentCardIndex != 7 || plungerFeedbackText == null) return;
 
             ActionBasedController leftCtrl = FindLeftController();
@@ -678,6 +734,45 @@ namespace Version_2
         {
             GameObject go = GameObject.Find("XR Origin (XR Rig)/Camera Offset/Left Controller");
             return go != null ? go.GetComponent<ActionBasedController>() : null;
+        }
+
+        private static ActionBasedController FindRightController()
+        {
+            GameObject go = GameObject.Find("XR Origin (XR Rig)/Camera Offset/Right Controller");
+            return go != null ? go.GetComponent<ActionBasedController>() : null;
+        }
+
+        private static void HandleRightIndexNextClick(GameObject obj)
+        {
+            if (nextButton == null || !nextButton.interactable) return;
+
+            ActionBasedController rightCtrl = FindRightController();
+            if (rightCtrl == null || rightCtrl.activateAction.action == null) return;
+
+            bool rightIndexNow = rightCtrl.activateAction.action.IsPressed();
+            if (rightIndexNow && !wasRightIndexPressed)
+            {
+                nextButton.onClick.Invoke();
+            }
+            wasRightIndexPressed = rightIndexNow;
+        }
+
+        private static void ConfigureTextFit(Text text, int preferredSize, int minSize, int maxSize)
+        {
+            text.fontSize = preferredSize;
+            text.resizeTextForBestFit = false;
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.lineSpacing = 1.08f;
+        }
+
+        private static GameObject GetUIManagerContext(GameObject fallback)
+        {
+            if (uiManagerContext != null)
+            {
+                return uiManagerContext;
+            }
+            return fallback;
         }
 
         private static void EnsureXRUIEventSystem()

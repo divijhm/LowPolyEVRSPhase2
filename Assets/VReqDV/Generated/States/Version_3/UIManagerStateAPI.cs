@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT
 using UnityEngine;
 
-namespace Version_2
+namespace Version_3
 {
     public static class UIManagerStateAPI
     {

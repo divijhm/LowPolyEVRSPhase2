@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-namespace Version_2
+namespace Version_3
 {
     public static class UIManagerStateStorage
     {
