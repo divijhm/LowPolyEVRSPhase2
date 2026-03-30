@@ -1,0 +1,183 @@
+{
+    "behaviors": [
+        {
+            "id": "SpaceshipLaunch",
+            "event": "OnXRInteraction",
+            "actors": [
+                "Spaceship"
+            ],
+            "precondition": {
+                "XRinteraction": "select",
+                "equals": [
+                    "Self.state",
+                    "idle"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "LaunchSpaceship"
+            },
+            "postcondition": {
+                "equals": [
+                    "Self.state",
+                    "flying"
+                ]
+            }
+        },
+        {
+            "id": "SpaceshipFlyToDebris",
+            "event": "OnCondition",
+            "actors": [
+                "Spaceship"
+            ],
+            "precondition": {
+                "all": [
+                    {
+                        "equals": [
+                            "Self.state",
+                            "flying"
+                        ]
+                    },
+                    {
+                        "runAlgorithm": "SteerTowardNearestDebris",
+                        "params": {
+                            "obj": "Self"
+                        }
+                    }
+                ]
+            },
+            "action": {
+                "runAlgorithm": "CollectNearestDebris",
+                "params": {
+                    "obj": "Self"
+                }
+            },
+            "postcondition": {
+                "equals": [
+                    "Self.state",
+                    "flying"
+                ]
+            }
+        },
+        {
+            "id": "SpaceshipReturn",
+            "event": "OnCondition",
+            "actors": [
+                "Spaceship"
+            ],
+            "precondition": {
+                "all": [
+                    {
+                        "equals": [
+                            "Self.state",
+                            "flying"
+                        ]
+                    },
+                    {
+                        "runAlgorithm": "IsAllDebrisCollected"
+                    }
+                ]
+            },
+            "action": {
+                "runAlgorithm": "ReturnToBase",
+                "params": {
+                    "obj": "Self"
+                }
+            },
+            "postcondition": {
+                "equals": [
+                    "Self.state",
+                    "returning"
+                ]
+            }
+        },
+        {
+            "id": "SpaceshipDock",
+            "event": "OnCondition",
+            "actors": [
+                "Spaceship"
+            ],
+            "precondition": {
+                "all": [
+                    {
+                        "equals": [
+                            "Self.state",
+                            "returning"
+                        ]
+                    },
+                    {
+                        "runAlgorithm": "SteerToHomeBase",
+                        "params": {
+                            "obj": "Self"
+                        }
+                    }
+                ]
+            },
+            "action": {
+                "runAlgorithm": "DockAndReset"
+            },
+            "postcondition": {
+                "all": [
+                    {
+                        "equals": [
+                            "Self.state",
+                            "idle"
+                        ]
+                    },
+                    {
+                        "equals": [
+                            "Debris_1.state",
+                            "floating"
+                        ]
+                    },
+                    {
+                        "equals": [
+                            "Debris_2.state",
+                            "floating"
+                        ]
+                    },
+                    {
+                        "equals": [
+                            "Debris_3.state",
+                            "floating"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "DebrisGetCollected",
+            "event": "OnCondition",
+            "actors": [
+                "Debris_1"
+            ],
+            "precondition": {
+                "all": [
+                    {
+                        "equals": [
+                            "Self.state",
+                            "floating"
+                        ]
+                    },
+                    {
+                        "runAlgorithm": "IsDebrisCaptured",
+                        "params": {
+                            "obj": "Self"
+                        }
+                    }
+                ]
+            },
+            "action": {
+                "runAlgorithm": "SnapDebrisToShip",
+                "params": {
+                    "obj": "Self"
+                }
+            },
+            "postcondition": {
+                "equals": [
+                    "Self.state",
+                    "collected"
+                ]
+            }
+        }
+    ]
+}

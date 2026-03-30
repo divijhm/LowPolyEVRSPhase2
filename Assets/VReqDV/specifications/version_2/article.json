@@ -1,0 +1,93 @@
+{
+    "articles": [
+        {
+            "_objectname": "UIManager",
+            "_sid": null,
+            "_slabel": null,
+            "source": null,
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "empty",
+            "Transform_initialpos": {
+                "x": "0",
+                "y": "0",
+                "z": "0"
+            },
+            "Transform_initialrotation": {
+                "x": "0",
+                "y": "0",
+                "z": "0"
+            },
+            "Transform_objectscale": {
+                "x": "1",
+                "y": "1",
+                "z": "1"
+            },
+            "XRRigidObject": {
+                "value": "0",
+                "mass": "0",
+                "dragfriction": "0",
+                "angulardrag": "0",
+                "Isgravityenable": "false",
+                "IsKinematic": "false",
+                "CanInterpolate": "0",
+                "CollisionPolling": "none"
+            },
+            "states": [
+                "initialized",
+                "card1_syringeSelection",
+                "card2_adminType",
+                "card3_fillInstructions",
+                "card4_checkBubbles",
+                "card5_controllerAngles"
+            ],
+            "context_img_source": null,
+            "Interaction": null
+        },
+        {
+            "_objectname": "ControllerAngleDisplay",
+            "_sid": null,
+            "_slabel": null,
+            "source": null,
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "empty",
+            "Transform_initialpos": {
+                "x": "0",
+                "y": "0",
+                "z": "0"
+            },
+            "Transform_initialrotation": {
+                "x": "0",
+                "y": "0",
+                "z": "0"
+            },
+            "Transform_objectscale": {
+                "x": "1",
+                "y": "1",
+                "z": "1"
+            },
+            "XRRigidObject": {
+                "value": "0",
+                "mass": "0",
+                "dragfriction": "0",
+                "angulardrag": "0",
+                "Isgravityenable": "false",
+                "IsKinematic": "false",
+                "CanInterpolate": "0",
+                "CollisionPolling": "none"
+            },
+            "states": [
+                "waiting_for_input"
+            ],
+            "context_img_source": null,
+            "Interaction": null
+        }
+    ]
+}

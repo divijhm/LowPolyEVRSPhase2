@@ -1,0 +1,269 @@
+{
+    "articles": [
+        {
+            "_objectname": "Void",
+            "_sid": null,
+            "_slabel": null,
+            "source": null,
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "Cube",
+            "Transform_initialpos": {
+                "x": "0",
+                "y": "-1",
+                "z": "0"
+            },
+            "Transform_initialrotation": {
+                "x": "0",
+                "y": "0",
+                "z": "0"
+            },
+            "Transform_objectscale": {
+                "x": "40",
+                "y": "0.1",
+                "z": "40"
+            },
+            "XRRigidObject": {
+                "value": "0",
+                "mass": "0",
+                "dragfriction": "0",
+                "angulardrag": "0",
+                "Isgravityenable": "false",
+                "IsKinematic": "false",
+                "CanInterpolate": "0",
+                "CollisionPolling": "none"
+            },
+            "states": [
+                "ready"
+            ],
+            "context_img_source": null
+        },
+        {
+            "_objectname": "HomeBase",
+            "_sid": null,
+            "_slabel": null,
+            "source": null,
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "Cube",
+            "Transform_initialpos": {
+                "x": "-8",
+                "y": "0",
+                "z": "0"
+            },
+            "Transform_initialrotation": {
+                "x": "0",
+                "y": "0",
+                "z": "0"
+            },
+            "Transform_objectscale": {
+                "x": "2",
+                "y": "0.3",
+                "z": "2"
+            },
+            "XRRigidObject": {
+                "value": "0",
+                "mass": "0",
+                "dragfriction": "0",
+                "angulardrag": "0",
+                "Isgravityenable": "false",
+                "IsKinematic": "true",
+                "CanInterpolate": "0",
+                "CollisionPolling": "none"
+            },
+            "states": [
+                "docked",
+                "empty"
+            ],
+            "context_img_source": null
+        },
+        {
+            "_objectname": "Spaceship",
+            "_sid": null,
+            "_slabel": null,
+            "source": null,
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "Capsule",
+            "Transform_initialpos": {
+                "x": "-8",
+                "y": "1",
+                "z": "0"
+            },
+            "Transform_initialrotation": {
+                "x": "0",
+                "y": "0",
+                "z": "90"
+            },
+            "Transform_objectscale": {
+                "x": "0.5",
+                "y": "1",
+                "z": "0.5"
+            },
+            "XRRigidObject": {
+                "value": "1",
+                "mass": "1",
+                "dragfriction": "1",
+                "angulardrag": "1",
+                "Isgravityenable": "false",
+                "IsKinematic": "true",
+                "CanInterpolate": "0",
+                "CollisionPolling": "discrete"
+            },
+            "Interaction": {
+                "XRGrabInteractable": "true",
+                "XRInteractionMaskLayer": [
+                    "default"
+                ],
+                "TrackPosition": "true",
+                "TrackRotation": "true",
+                "Throw_Detach": "true"
+            },
+            "states": [
+                "idle",
+                "flying",
+                "collecting",
+                "returning"
+            ],
+            "context_img_source": null
+        },
+        {
+            "_objectname": "Debris_1",
+            "_sid": null,
+            "_slabel": null,
+            "source": null,
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "Cube",
+            "Transform_initialpos": {
+                "x": "2",
+                "y": "0",
+                "z": "-3"
+            },
+            "Transform_initialrotation": {
+                "x": "15",
+                "y": "30",
+                "z": "10"
+            },
+            "Transform_objectscale": {
+                "x": "0.6",
+                "y": "0.6",
+                "z": "0.6"
+            },
+            "XRRigidObject": {
+                "value": "1",
+                "mass": "0.5",
+                "dragfriction": "0.5",
+                "angulardrag": "0.5",
+                "Isgravityenable": "false",
+                "IsKinematic": "false",
+                "CanInterpolate": "0",
+                "CollisionPolling": "discrete"
+            },
+            "Interaction": {
+                "XRGrabInteractable": "true",
+                "XRInteractionMaskLayer": [
+                    "default"
+                ],
+                "TrackPosition": "true",
+                "TrackRotation": "true",
+                "Throw_Detach": "true"
+            },
+            "states": [
+                "floating",
+                "collected"
+            ],
+            "context_img_source": null
+        },
+        {
+            "_objectname": "Debris_2",
+            "_sid": null,
+            "_slabel": null,
+            "source": "Debris_1",
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "Cube",
+            "Transform_initialpos": {
+                "x": "5",
+                "y": "1",
+                "z": "2"
+            },
+            "Transform_initialrotation": {
+                "x": "45",
+                "y": "10",
+                "z": "25"
+            },
+            "Transform_objectscale": {
+                "x": "0.6",
+                "y": "0.6",
+                "z": "0.6"
+            },
+            "XRRigidObject": {
+                "value": "1",
+                "mass": "0.5",
+                "dragfriction": "0.5",
+                "angulardrag": "0.5",
+                "Isgravityenable": "false",
+                "IsKinematic": "false",
+                "CanInterpolate": "0",
+                "CollisionPolling": "discrete"
+            },
+            "states": null,
+            "context_img_source": null
+        },
+        {
+            "_objectname": "Debris_3",
+            "_sid": null,
+            "_slabel": null,
+            "source": "Debris_1",
+            "_IsHidden": 0,
+            "_enumcount": 0,
+            "_Is3DObject": 0,
+            "HasChild": 0,
+            "Children": null,
+            "shape": "Cube",
+            "Transform_initialpos": {
+                "x": "8",
+                "y": "-0.5",
+                "z": "0"
+            },
+            "Transform_initialrotation": {
+                "x": "20",
+                "y": "60",
+                "z": "5"
+            },
+            "Transform_objectscale": {
+                "x": "0.6",
+                "y": "0.6",
+                "z": "0.6"
+            },
+            "XRRigidObject": {
+                "value": "1",
+                "mass": "0.5",
+                "dragfriction": "0.5",
+                "angulardrag": "0.5",
+                "Isgravityenable": "false",
+                "IsKinematic": "false",
+                "CanInterpolate": "0",
+                "CollisionPolling": "discrete"
+            },
+            "states": null,
+            "context_img_source": null
+        }
+    ]
+}

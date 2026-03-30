@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi:noNamespaceSchemaLocation="UIElementsSchema/UIElements.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="False">
+    <ui:Style src="InjectionGuideUI.uss"/>
+    <ui:VisualElement name="MainContainer" class="main-container">
+        <!-- Card Display Area -->
+        <ui:VisualElement name="CardContainer" class="card-container">
+            <ui:Label name="CardTitle" text="Syringe Selection" class="card-title"/>
+            <ui:VisualElement name="CardContent" class="card-content">
+                <ui:Label name="ContentText" text="Select the type of syringe" class="content-text"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        
+        <!-- Controls -->
+        <ui:VisualElement name="ControlsContainer" class="controls-container">
+            <ui:Button name="BackButton" text="Back" class="nav-button back-button"/>
+            <ui:Button name="NextButton" text="Next" class="nav-button next-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

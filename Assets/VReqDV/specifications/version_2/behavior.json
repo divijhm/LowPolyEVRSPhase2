@@ -1,0 +1,86 @@
+{
+    "behaviors": [
+        {
+            "id": "InitializeUI",
+            "event": "OnCondition",
+            "actors": [
+                "UIManager"
+            ],
+            "precondition": {
+                "equals": [
+                    "Self.state",
+                    "initialized"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "SetupUISystem",
+                "params": {
+                    "obj": "Self"
+                }
+            },
+            "postcondition": {
+                "equals": [
+                    "Self.state",
+                    "card1_syringeSelection"
+                ]
+            }
+        },
+        {
+            "id": "UpdateControllerAngles",
+            "event": "OnCondition",
+            "actors": [
+                "ControllerAngleDisplay"
+            ],
+            "precondition": {
+                "equals": [
+                    "Self.state",
+                    "waiting_for_input"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "DisplayLeftControllerAngles",
+                "params": {
+                    "obj": "Self"
+                }
+            },
+            "postcondition": {
+                "equals": [
+                    "Self.state",
+                    "waiting_for_input"
+                ]
+            }
+        },
+        {
+            "id": "NavigateNext",
+            "event": "OnXRInteraction",
+            "actors": [
+                "UIManager"
+            ],
+            "precondition": {
+                "XRinteraction": "select"
+            },
+            "action": {
+                "runAlgorithm": "HandleNextNavigation",
+                "params": {
+                    "obj": "Self"
+                }
+            }
+        },
+        {
+            "id": "NavigateBack",
+            "event": "OnXRInteraction",
+            "actors": [
+                "UIManager"
+            ],
+            "precondition": {
+                "XRinteraction": "select"
+            },
+            "action": {
+                "runAlgorithm": "HandleBackNavigation",
+                "params": {
+                    "obj": "Self"
+                }
+            }
+        }
+    ]
+}
