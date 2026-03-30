@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 using UnityEngine.EventSystems;
 
-namespace Version_4
+namespace Version_5
 {
     /// <summary>
     /// VR Injection Administration Guide - Version 2 Extended
@@ -104,19 +104,20 @@ namespace Version_4
             Camera xrCam = Camera.main;
             if (xrCam != null)
             {
-                Vector3 topRightPos = xrCam.transform.position + (xrCam.transform.forward * 1.25f) + (xrCam.transform.right * 0.65f) + (xrCam.transform.up * 0.14f);
+                Vector3 topRightPos = xrCam.transform.position + (xrCam.transform.forward * 0.95f) + (xrCam.transform.right * 0.55f) + (xrCam.transform.up * 0.02f);
                 canvasGO.transform.position = topRightPos;
                 canvasGO.transform.rotation = Quaternion.LookRotation(xrCam.transform.position - topRightPos, Vector3.up) * Quaternion.Euler(0f, 180f, 0f);
             }
             else
             {
-                canvasGO.transform.position = new Vector3(1.3f, 1.5f, 1.5f);
+                canvasGO.transform.position = new Vector3(1.0f, 1.2f, 1.2f);
                 canvasGO.transform.rotation = Quaternion.Euler(0f, 45f, 0f);
             }
 
             canvasRect.localScale = new Vector3(0.001f, 0.001f, 0.001f);
 
             canvasGO.AddComponent<TrackedDeviceGraphicRaycaster>();
+            canvasGO.AddComponent<GraphicRaycaster>();
 
             // Container panel
             GameObject containerGO = new GameObject("UIContainer");
@@ -129,7 +130,6 @@ namespace Version_4
 
             Image containerImage = containerGO.AddComponent<Image>();
             containerImage.color = new Color(0, 0, 0, 0.9f);
-            containerGO.AddComponent<RectMask2D>();
 
             // Create 8 card panels
             for (int i = 0; i < 8; i++)
@@ -142,9 +142,6 @@ namespace Version_4
                 cardRect.offsetMin = Vector2.zero;
                 cardRect.offsetMax = Vector2.zero;
                 cardRect.pivot = new Vector2(0.5f, 0.5f);
-
-                // Clip child text/content to card bounds so it does not appear to drift.
-                cardGO.AddComponent<RectMask2D>();
 
                 CanvasGroup cardGroup = cardGO.AddComponent<CanvasGroup>();
                 cardGroup.alpha = (i == 0) ? 1f : 0f;
@@ -178,7 +175,7 @@ namespace Version_4
 
             RefreshButtons();
             uiInitialized = true;
-            StateAccessor.SetState("UIManager", "card1_syringeSelection", GetUIManagerContext(obj), "Version_4");
+            StateAccessor.SetState("UIManager", "card1_syringeSelection", GetUIManagerContext(obj), "Version_5");
             Debug.Log("[VR Injection] UI initialized");
         }
 
@@ -211,8 +208,11 @@ namespace Version_4
             RectTransform contentRect = contentGO.AddComponent<RectTransform>();
             contentRect.anchorMin = new Vector2(0, 0);
             contentRect.anchorMax = new Vector2(1, 1);
-            contentRect.offsetMin = new Vector2(10, 50);
-            contentRect.offsetMax = new Vector2(-10, -68);
+            contentRect.offsetMin = new Vector2(14, 56);
+            contentRect.offsetMax = new Vector2(-14, -74);
+
+            // Clip only scrollable/content text area and keep title independent.
+            contentGO.AddComponent<RectMask2D>();
 
             // Card-specific content
             switch (cardIndex)
@@ -294,6 +294,8 @@ namespace Version_4
             RectTransform angleRect = angleGO.AddComponent<RectTransform>();
             angleRect.anchorMin = Vector2.zero;
             angleRect.anchorMax = Vector2.one;
+            angleRect.offsetMin = new Vector2(6f, 2f);
+            angleRect.offsetMax = new Vector2(-6f, -2f);
             angleRect.offsetMin = Vector2.zero;
             angleRect.offsetMax = Vector2.zero;
 
@@ -358,6 +360,8 @@ namespace Version_4
             RectTransform angleRect = angleGO.AddComponent<RectTransform>();
             angleRect.anchorMin = Vector2.zero;
             angleRect.anchorMax = Vector2.one;
+            angleRect.offsetMin = new Vector2(6f, 2f);
+            angleRect.offsetMax = new Vector2(-6f, -2f);
 
             angleStatusText = angleGO.AddComponent<Text>();
             angleStatusText.text = "Align angles...";
@@ -378,6 +382,8 @@ namespace Version_4
             RectTransform feedbackRect = feedbackGO.AddComponent<RectTransform>();
             feedbackRect.anchorMin = Vector2.zero;
             feedbackRect.anchorMax = Vector2.one;
+            feedbackRect.offsetMin = new Vector2(6f, 2f);
+            feedbackRect.offsetMax = new Vector2(-6f, -2f);
 
             insertionFeedbackText = feedbackGO.AddComponent<Text>();
             insertionFeedbackText.text = "Hold GRIP to insert...";
@@ -398,6 +404,8 @@ namespace Version_4
             RectTransform feedbackRect = feedbackGO.AddComponent<RectTransform>();
             feedbackRect.anchorMin = Vector2.zero;
             feedbackRect.anchorMax = Vector2.one;
+            feedbackRect.offsetMin = new Vector2(6f, 2f);
+            feedbackRect.offsetMax = new Vector2(-6f, -2f);
 
             plungerFeedbackText = feedbackGO.AddComponent<Text>();
             plungerFeedbackText.text = "Press INDEX to plunge...";
@@ -418,25 +426,27 @@ namespace Version_4
             GameObject btnGO = new GameObject($"{text}Button");
             btnGO.transform.SetParent(parentGO.transform, false);
             RectTransform btnRect = btnGO.AddComponent<RectTransform>();
-            btnRect.sizeDelta = new Vector2(100, 40);
+            btnRect.sizeDelta = new Vector2(150, 48);
 
             LayoutElement layoutElem = btnGO.AddComponent<LayoutElement>();
-            layoutElem.preferredWidth = 100;
-            layoutElem.preferredHeight = 40;
+            layoutElem.preferredWidth = 150;
+            layoutElem.preferredHeight = 48;
 
             Image btnImage = btnGO.AddComponent<Image>();
             btnImage.color = new Color(0.27f, 0.51f, 0.71f);
 
             Button btn = btnGO.AddComponent<Button>();
-
-            // XR Interactable
-            XRSimpleInteractable interactable = btnGO.AddComponent<XRSimpleInteractable>();
-            interactable.selectEntered.AddListener((SelectEnterEventArgs args) => btn.onClick.Invoke());
-
-            // Collider for raycasting
-            BoxCollider collider = btnGO.AddComponent<BoxCollider>();
-            collider.size = new Vector3(btnRect.sizeDelta.x, btnRect.sizeDelta.y, 20f);
-            collider.center = new Vector3(0f, 0f, 0f);
+            btn.targetGraphic = btnImage;
+            btn.navigation = new Navigation { mode = Navigation.Mode.None };
+            ColorBlock colors = btn.colors;
+            colors.normalColor = new Color(0.27f, 0.51f, 0.71f);
+            colors.highlightedColor = new Color(0.34f, 0.62f, 0.86f);
+            colors.pressedColor = new Color(0.20f, 0.40f, 0.58f);
+            colors.selectedColor = colors.highlightedColor;
+            colors.disabledColor = new Color(0.35f, 0.35f, 0.35f);
+            colors.colorMultiplier = 1f;
+            colors.fadeDuration = 0.06f;
+            btn.colors = colors;
 
             // Text
             GameObject textGO = new GameObject("Text");
@@ -468,7 +478,7 @@ namespace Version_4
                 currentCardIndex++;
                 ShowCard(currentCardIndex);
                 RefreshButtons();
-                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), GetUIManagerContext(obj), "Version_4");
+                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), GetUIManagerContext(obj), "Version_5");
                 Debug.Log($"[VR Injection] → Card {currentCardIndex + 1}");
             }
         }
@@ -481,7 +491,7 @@ namespace Version_4
                 currentCardIndex--;
                 ShowCard(currentCardIndex);
                 RefreshButtons();
-                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), GetUIManagerContext(obj), "Version_4");
+                StateAccessor.SetState("UIManager", GetStateForCard(currentCardIndex), GetUIManagerContext(obj), "Version_5");
                 Debug.Log($"[VR Injection] ← Card {currentCardIndex + 1}");
             }
         }
@@ -605,7 +615,7 @@ namespace Version_4
                 ShowCard(6);
                 RefreshButtons();
                 gripStartPosition = leftCtrl.transform.position;
-                StateAccessor.SetState("UIManager", "card7_needleInsertion", GetUIManagerContext(obj), "Version_4");
+                StateAccessor.SetState("UIManager", "card7_needleInsertion", GetUIManagerContext(obj), "Version_5");
                 Debug.Log("[VR Injection] Starting insertion...");
             }
             wasGripPressed = gripNow;
@@ -669,7 +679,7 @@ namespace Version_4
                 RefreshButtons();
                 plungerStartPosition = leftCtrl.transform.position;
                 plungerStartTime = Time.time;
-                StateAccessor.SetState("UIManager", "card8_plungerPress", GetUIManagerContext(obj), "Version_4");
+                StateAccessor.SetState("UIManager", "card8_plungerPress", GetUIManagerContext(obj), "Version_5");
                 Debug.Log("[VR Injection] Starting plunger...");
             }
             wasIndexPressed = indexNow;
@@ -741,12 +751,14 @@ namespace Version_4
         private static void HandleRightIndexNextClick(GameObject obj)
         {
             if (nextButton == null || !nextButton.interactable) return;
+            if (currentCardIndex < 4) return;
 
             ActionBasedController rightCtrl = FindRightController();
             if (rightCtrl == null || rightCtrl.activateAction.action == null) return;
 
             bool rightIndexNow = rightCtrl.activateAction.action.IsPressed();
-            if (rightIndexNow && !wasRightIndexPressed)
+            bool edgePressed = rightCtrl.activateAction.action.WasPressedThisFrame() || (rightIndexNow && !wasRightIndexPressed);
+            if (edgePressed)
             {
                 nextButton.onClick.Invoke();
             }

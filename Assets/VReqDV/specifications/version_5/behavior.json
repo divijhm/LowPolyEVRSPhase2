@@ -1,0 +1,99 @@
+{
+    "behaviors": [
+        {
+            "id": "InitializeUI",
+            "event": "OnCondition",
+            "actors": [
+                "UIManager"
+            ],
+            "precondition": {
+                "equals": [
+                    "Self.state",
+                    "initialized"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "SetupUISystem",
+                "params": {
+                    "obj": "Self"
+                }
+            }
+        },
+        {
+            "id": "UpdateControllerAngles",
+            "event": "OnCondition",
+            "actors": [
+                "ControllerAngleDisplay"
+            ],
+            "precondition": {
+                "equals": [
+                    "Self.state",
+                    "waiting_for_input"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "DisplayLeftControllerAngles",
+                "params": {
+                    "obj": "Self"
+                }
+            }
+        },
+        {
+            "id": "UpdateAngleAlignment",
+            "event": "OnCondition",
+            "actors": [
+                "ControllerAngleDisplay"
+            ],
+            "precondition": {
+                "equals": [
+                    "Self.state",
+                    "waiting_for_input"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "UpdateAngleAlignment",
+                "params": {
+                    "obj": "Self"
+                }
+            }
+        },
+        {
+            "id": "TrackInsertionMovement",
+            "event": "OnCondition",
+            "actors": [
+                "ControllerAngleDisplay"
+            ],
+            "precondition": {
+                "equals": [
+                    "Self.state",
+                    "waiting_for_input"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "TrackNeedleInsertion",
+                "params": {
+                    "obj": "Self"
+                }
+            }
+        },
+        {
+            "id": "TrackPlungerMovement",
+            "event": "OnCondition",
+            "actors": [
+                "ControllerAngleDisplay"
+            ],
+            "precondition": {
+                "equals": [
+                    "Self.state",
+                    "waiting_for_input"
+                ]
+            },
+            "action": {
+                "runAlgorithm": "TrackPlungerPress",
+                "params": {
+                    "obj": "Self"
+                }
+            }
+        }
+    ]
+}
